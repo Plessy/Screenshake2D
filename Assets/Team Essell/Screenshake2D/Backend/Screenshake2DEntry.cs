@@ -23,9 +23,9 @@ namespace TeamEssell.Screenshake2D
             Reset();
         }
 
-        public void Shake(Screenshake2DDescription description)
+        public void Shake(Screenshake2DDescription description, Screenshake2DChannelMode channelmode)
         {
-            switch (description.ChannelMode)
+            switch (channelmode)
             {
                 case Screenshake2DChannelMode.RefreshStrength:
                     if (description.ShakeStrength < CurrentStrength)

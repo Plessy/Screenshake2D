@@ -146,7 +146,7 @@ namespace TeamEssell.Screenshake2D
 
             if (value < 0)
             {
-                scale = 1f / 1f-value;
+                scale = 1f / 1f - value;
             }
 
             transform.localScale = new Vector3(scale, scale, 1);
@@ -185,7 +185,7 @@ namespace TeamEssell.Screenshake2D
                 entry = Pool[0];
                 Pool.RemoveAt(0);
             }
-            
+
             entry.Reset();
 
             return entry;
@@ -195,16 +195,36 @@ namespace TeamEssell.Screenshake2D
         /// <param name="data">The scriptable object to use.</param>
         public void Shake(Screenshake2DData data)
         {
-            Shake(data.Data);
+            Shake(data.Data, data.Data.UseChannel, data.Data.ChannelID, data.Data.ChannelMode);
         }
 
         /// <summary> Causes the screenshake to happen. </summary>
         /// <param name="description">The description to use.</param>
         public void Shake(Screenshake2DDescription description)
         {
+            Shake(description, description.UseChannel, description.ChannelID, description.ChannelMode);
+        }
+
+        /// <summary> Causes the screenshake to happen. </summary>
+        /// <param name="data">The scriptable object to use.</param>
+        /// <param name="usechannel">Whether or not to use a channel. If false, it cannot be individually stopped until completion.</param>
+        /// <param name="channelid">The ID used for channels.</param>
+        /// <param name="channelmode">The channel mode. Affects how it interacts with the channel.</param>
+        public void Shake(Screenshake2DData data, bool usechannel, string channelid, Screenshake2DChannelMode channelmode)
+        {
+            Shake(data.Data, usechannel, channelid, channelmode);
+        }
+
+        /// <summary> Causes the screenshake to happen. </summary>
+        /// <param name="description">The description to use.</param>
+        /// <param name="usechannel">Whether or not to use a channel. If false, it cannot be individually stopped until completion.</param>
+        /// <param name="channelid">The ID used for channels.</param>
+        /// <param name="channelmode">The channel mode. Affects how it interacts with the channel.</param>
+        public void Shake(Screenshake2DDescription description, bool usechannel, string channelid, Screenshake2DChannelMode channelmode)
+        {
             Screenshake2DEntry currententry = null;
 
-            if (!description.UseChannel)
+            if (!usechannel)
             {
                 currententry = UnpoolEntry();
                 Entries.Add(currententry);
@@ -213,7 +233,7 @@ namespace TeamEssell.Screenshake2D
             {
                 foreach (var entry in Entries)
                 {
-                    if (entry.Description.ChannelID == description.ChannelID)
+                    if (entry.Description.ChannelID == channelid)
                     {
                         currententry = entry;
                         break;
@@ -227,7 +247,7 @@ namespace TeamEssell.Screenshake2D
                 }
             }
 
-            currententry.Shake(description);
+            currententry.Shake(description, channelmode);
         }
 
         /// <summary> Stops the channel's shaking effect. </summary>
@@ -256,7 +276,7 @@ namespace TeamEssell.Screenshake2D
             }
         }
 
-        protected void TestShake() 
+        protected void TestShake()
         {
             if (Application.isEditor && Application.isPlaying)
             {
